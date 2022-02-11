@@ -6,7 +6,9 @@ import streamlit as st
 
 # Set the page layout
 st.set_page_config(page_title="OutfitGen Demo Application", layout = "wide", initial_sidebar_state = "collapsed")
-
+with open("style.css") as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+    
 # Show the logo on top
 st.image(PIL.Image.open("./logo.png"))
 
@@ -17,10 +19,8 @@ fs = [x for x in list(Path("./images/").glob("**/*")) if x.is_file()]
 config = json.loads(Path("./config.json").read_text())
 
 # Create elements you will need for session state
-if "p1" not in st.session_state:
-    st.session_state["p1"] = True
 if "p2" not in st.session_state:
-    st.session_state["p2"] = False
+    st.session_state["p2"] = True
 if "p3" not in st.session_state:
     st.session_state["p3"] = False
 if "occasion" not in st.session_state:
@@ -31,36 +31,16 @@ if "category" not in st.session_state:
 
 
 # Select which view you want to toggle to
-cols = st.columns([5, 10, 5, 10, 5])
-if cols[0].button("Choose Input & Category", key = "page1"):
-    st.session_state["p1"] = True
-    st.session_state["p2"] = False
-    st.session_state["p3"] = False
+cols = st.columns([15, 10, 5, 10, 5])
 
-if cols[2].button("Build your own outfit", key = "page2"):
-    st.session_state["p1"] = False
+if cols[1].button("Build your own outfit", key = "page2"):
     st.session_state["p2"] = True
     st.session_state["p3"] = False
 
-if cols[-1].button("Recreate the look", key = "page3"):
-    st.session_state["p1"] = False
+if cols[3].button("Recreate the look", key = "page3"):
     st.session_state["p2"] = False
     st.session_state["p3"] = True
 
-
-# See page 1
-if st.session_state["p1"]:
-    st.markdown("# Curate your own outfit")
-
-    # Show options for Occasion
-    occasion = st.multiselect("What occasion are you shopping for?", key = "occ", options = config["occasion"], default = st.session_state["occasion"])
-    st.session_state["occasion"] = occasion
-
-    st.empty()
-
-    # Show options for Category
-    categories = st.multiselect("What categories are you looking for?", key = "cat", options = config["category"], default = st.session_state["category"])
-    st.session_state["category"] = categories
 
 
 # Render Page 2
